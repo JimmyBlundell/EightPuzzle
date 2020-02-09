@@ -32,7 +32,7 @@ int main()
     unordered_set<string> visitedSet;
     
     //Used for selecting the move with the lowest cost
-    priority_queue<pair<string, int>> pq;
+    priority_queue<pair<int, string>, vector<pair<int, string>>, greater<pair<int, string>>> pq;
     
     //Global value to keep track of heuristic value for each puzzle state as we are solving
     int heuristic = INT_MAX;
@@ -91,30 +91,29 @@ int main()
             
             //TODO: for each of the moves. In each if statement, I should check if the heuristicValue becomes 0. If so, I take that as my move right there. I push the final move to my vector containing all moves, make the move on the actual puzzle, then break out of the while loop!
             
-            //TODO: Also need to write comparator for priority queue so that it compares the second value.
-            
+            //Check to see if moves are valid, placing them into priority queue if so
             if (moveLeft(leftMove, xcord, ycord))
             {
                 int leftMoveHeuristic = heuristicValue(leftMove, coordinateMap);
-                pq.push(make_pair("Left", leftMoveHeuristic));
+                pq.push(make_pair(leftMoveHeuristic, "Left"));
             }
             
             if (moveRight(rightMove, xcord, ycord))
             {
                 int rightMoveHeuristic = heuristicValue(rightMove, coordinateMap);
-                pq.push(make_pair("Right", rightMoveHeuristic));
+                pq.push(make_pair(rightMoveHeuristic, "Right"));
             }
             
             if (moveUp(upMove, xcord, ycord))
             {
                 int upMoveHeuristic = heuristicValue(upMove, coordinateMap);
-                pq.push(make_pair("Up", upMoveHeuristic));
+                pq.push(make_pair(upMoveHeuristic, "Up"));
             }
             
             if (moveDown(downMove, xcord, ycord))
             {
                 int downMoveHeuristic = heuristicValue(downMove, coordinateMap);
-                pq.push(make_pair("Down", downMoveHeuristic));
+                pq.push(make_pair(downMoveHeuristic, "Down"));
             }
             
         }
