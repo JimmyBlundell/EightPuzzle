@@ -79,7 +79,7 @@ int main()
         
         while (heuristic != 0)
         {
-            
+    
             vector<vector<string>> leftMove = currentPuzzle;
             vector<vector<string>> rightMove = currentPuzzle;
             vector<vector<string>> upMove = currentPuzzle;
@@ -89,28 +89,32 @@ int main()
             int xcord = coordinates.first;
             int ycord = coordinates.second;
             
+            //TODO: for each of the moves. In each if statement, I should check if the heuristicValue becomes 0. If so, I take that as my move right there. I push the final move to my vector containing all moves, make the move on the actual puzzle, then break out of the while loop!
+            
+            //TODO: Also need to write comparator for priority queue so that it compares the second value.
+            
             if (moveLeft(leftMove, xcord, ycord))
             {
                 int leftMoveHeuristic = heuristicValue(leftMove, coordinateMap);
-                
+                pq.push(make_pair("Left", leftMoveHeuristic));
             }
             
             if (moveRight(rightMove, xcord, ycord))
             {
                 int rightMoveHeuristic = heuristicValue(rightMove, coordinateMap);
-                
+                pq.push(make_pair("Right", rightMoveHeuristic));
             }
             
             if (moveUp(upMove, xcord, ycord))
             {
                 int upMoveHeuristic = heuristicValue(upMove, coordinateMap);
-                
+                pq.push(make_pair("Up", upMoveHeuristic));
             }
             
             if (moveDown(downMove, xcord, ycord))
             {
                 int downMoveHeuristic = heuristicValue(downMove, coordinateMap);
-                
+                pq.push(make_pair("Down", downMoveHeuristic));
             }
             
         }
