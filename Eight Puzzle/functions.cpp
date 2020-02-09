@@ -11,6 +11,8 @@
 #include <string>
 #include <map>
 #include <unordered_set>
+#include <sstream>
+#include <iostream>
 #include <cstdlib>
 using namespace std;
 
@@ -123,10 +125,21 @@ void generateCoordinateMap(map<string, pair<int, int>> &coordinateMap)
     
 }
 
-
-//
-// TODO: Have yet to implement these.
-//
+pair<int, int> findSlider(vector<vector<string>> &puzzleMatrix)
+{
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            if (puzzleMatrix[i][j] == "0")
+            {
+                return pair<int, int> (i, j);
+            }
+        }
+    }
+    cout << "Something wrong with puzzle - Couldn't find slider!" << endl;
+    return pair<int, int> (-1, -1);
+}
 
 bool moveUp(vector<vector<string>> &puzzleMatrix, int i, int j)
 {
@@ -185,6 +198,46 @@ bool moveRight(vector<vector<string>> &puzzleMatrix, int i, int j)
         puzzleMatrix[i][j] = puzzleMatrix[i][j+1];
         puzzleMatrix[i][j+1] = temp;
         return true;
+    }
+}
+
+bool isSolvable(string &puzzleString)
+{
+    int inversions = 0;
+    
+    stringstream str1;
+    stringstream str2;
+    
+    for (int i = 0; i < 9-1; i++)
+    {
+        for (int j = i+1; j < 9; j++)
+        {
+            char c1 = puzzleString[i];
+            char c2 = puzzleString[j];
+            
+            //Integer value for any digit is the digit minus '0' or 48.
+            int x = c1 - '0';
+            int y = c2 - '0';
+            
+            
+            if (x == 0 || y == 0)
+            {
+                continue;
+            }
+            if (x > y)
+            {
+                inversions++;
+            }
+        }
+    }
+    
+    if (inversions % 2 == 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 

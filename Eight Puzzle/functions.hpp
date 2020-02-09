@@ -10,6 +10,7 @@
 #include <vector>
 #include <unordered_set>
 #include <map>
+#include <sstream>
 #include <stdio.h>
 using namespace std;
 
@@ -28,7 +29,11 @@ int heuristicValue(vector<vector<string>> &startState, map<string, pair<int, int
 
 bool alreadyVisited(string, unordered_set<string> &visitedSet);
 
+pair<int, int> findSlider(vector<vector<string>> &puzzleMatrix);
+
 bool moveUp(vector<vector<string>> &puzzleMatrix, int i, int j);
 bool moveDown(vector<vector<string>> &puzzleMatrix, int i, int j);
 bool moveLeft(vector<vector<string>> &puzzleMatrix, int i, int j);
 bool moveRight(vector<vector<string>> &puzzleMatrix, int i, int j);
+
+bool isSolvable(string &puzzleString);
