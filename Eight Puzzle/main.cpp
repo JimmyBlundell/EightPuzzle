@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <chrono>
 #include <map>
 #include <unordered_set>
 #include <queue>
@@ -63,11 +64,13 @@ int main()
     
     //Loop through puzzleStrings vector, solving each puzzle
     
+    auto t1 = chrono::high_resolution_clock::now();
+    
     ofstream ostream;
     ostream.open("results.txt");
     if (ostream.is_open())
     {
-    
+
         auto puzzStrItr = puzzleStrings.begin();
         while (puzzStrItr != puzzleStrings.end())
         {
@@ -92,6 +95,13 @@ int main()
         }
     }
     ostream.close();
+    
+    auto t2 = chrono::high_resolution_clock::now();
+    
+    auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
+
+    cout << duration << "microseconds to solve all puzzles!" << endl;;
+    
     return 0;
 }
     
