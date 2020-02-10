@@ -20,22 +20,22 @@ using namespace std;
 
 int main()
 {
-   
+    
     ifstream programDataStream;
     
     vector<string> puzzleStrings;
     
     string puzzleInStringFormat = "";
     string temp;
+    const string goalState = "123456780";
+    
+    vector<string> solutionVec;
     
     map<string, pair<int, int>> coordinateMap;
     unordered_set<string> visitedSet;
     
     //Used for selecting the move with the lowest cost
-    priority_queue<pair<int, string>, vector<pair<int, string>>, greater<pair<int, string>>> pq;
-    
-    //Global value to keep track of heuristic value for each puzzle state as we are solving
-    int heuristic = INT_MAX;
+    priority_queue<Node, vector<Node>, greater<Node>> pq;
     
     //Mapping coordinates for quicker calculations of heuristic values
     generateCoordinateMap(coordinateMap);
@@ -48,7 +48,7 @@ int main()
         return -1;
     }
     
-    //Convert text file to strings representing puzzles, then push into vector. File must end with last digit of last puzzle (no extra spaces) or this will include an empty space on
+    //Convert text file to strings representing puzzles, then push into vector. File must end ath the last digit of last puzzle (no extra spaces) or this will include an empty space on the array
     while (!programDataStream.eof())
     {
         for (int i = 0; i < 9; i++)
@@ -61,76 +61,37 @@ int main()
         puzzleInStringFormat = "";
     }
     
-    //TODO: Loop through puzzleStrings vector, solving each puzzle
+    //Loop through puzzleStrings vector, solving each puzzle
     
-    vector<string> moves;
-    auto itr = puzzleStrings.begin();
-    
-    while (itr != puzzleStrings.end())
+    ofstream ostream;
+    ostream.open("results.txt");
+    if (ostream.is_open())
     {
-        if (!isSolvable(*itr))
-        {
-            cout << "Cannot solve the puzzle!" << endl;
-            ++itr;
-            continue;
-        }
-        
-        vector<vector<string>> currentPuzzle = stringToMatrix(*itr);
-        
-        while (heuristic != 0)
-        {
     
-            vector<vector<string>> leftMove = currentPuzzle;
-            vector<vector<string>> rightMove = currentPuzzle;
-            vector<vector<string>> upMove = currentPuzzle;
-            vector<vector<string>> downMove = currentPuzzle;
-            
-            pair<int, int> coordinates = findSlider(currentPuzzle);
-            int xcord = coordinates.first;
-            int ycord = coordinates.second;
-            
-            //TODO: for each of the moves. In each if statement, I should check if the heuristicValue becomes 0. If so, I take that as my move right there. I push the final move to my vector containing all moves, make the move on the actual puzzle, then break out of the while loop!
-            
-            //Check to see if moves are valid, placing them into priority queue if so
-            if (moveLeft(leftMove, xcord, ycord))
+        auto puzzStrItr = puzzleStrings.begin();
+        while (puzzStrItr != puzzleStrings.end())
+        {
+            if (!isSolvable(*puzzStrItr))
             {
-                int leftMoveHeuristic = heuristicValue(leftMove, coordinateMap);
-                pq.push(make_pair(leftMoveHeuristic, "Left"));
+                ostream << "Cannot be solved!" << "\n";
+                ++puzzStrItr;
             }
-            
-            if (moveRight(rightMove, xcord, ycord))
-            {
-                int rightMoveHeuristic = heuristicValue(rightMove, coordinateMap);
-                pq.push(make_pair(rightMoveHeuristic, "Right"));
-            }
-            
-            if (moveUp(upMove, xcord, ycord))
-            {
-                int upMoveHeuristic = heuristicValue(upMove, coordinateMap);
-                pq.push(make_pair(upMoveHeuristic, "Up"));
-            }
-            
-            if (moveDown(downMove, xcord, ycord))
-            {
-                int downMoveHeuristic = heuristicValue(downMove, coordinateMap);
-                pq.push(make_pair(downMoveHeuristic, "Down"));
-            }
-            
+            string first = *puzzStrItr;
+        
+            Node tempNode(first);
+        
+            tempNode.costSoFar = 0;
+            tempNode.heuristicCost = heuristicValue(tempNode.puzzleMatrix, coordinateMap);
+            tempNode.totalCost = tempNode.costSoFar + tempNode.heuristicCost;
+        
+            ++puzzStrItr;
+        
+            string ans = aStarAlgorithm(tempNode, goalState);
+        
+            ostream << ans << "\n";
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
     }
-    
+    ostream.close();
+    return 0;
 }
+    

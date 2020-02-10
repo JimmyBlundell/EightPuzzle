@@ -10,6 +10,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <queue>
 #include <unordered_set>
 #include <sstream>
 #include <iostream>
@@ -18,7 +19,6 @@ using namespace std;
 
 //Defining coordinate type because I don't know if I need to do it everywhere ;)
 typedef pair<int, int> coordinates;
-
 
 vector<vector<string>> stringToMatrix(string &str)
 {
@@ -149,9 +149,11 @@ bool moveUp(vector<vector<string>> &puzzleMatrix, int i, int j)
     }
     else
     {
+        
         string temp = puzzleMatrix[i][j];
         puzzleMatrix[i][j] = puzzleMatrix[i-1][j];
         puzzleMatrix[i-1][j] = temp;
+
         return true;
     }
 }
@@ -242,4 +244,108 @@ bool isSolvable(string &puzzleString)
 }
 
 
+string aStarAlgorithm(Node node, string goalState)
+{
+    map<string, pair<int, int>> coordinateMap;
+    generateCoordinateMap(coordinateMap);
+    
+    
+    unordered_set<string> visitedSet;
+    priority_queue<Node, vector<Node>, greater<Node>> pq;
 
+    pq.push(node);
+    
+    while (!pq.empty())
+    {
+        Node temp = pq.top();
+        pq.pop();
+        
+        visitedSet.insert(temp.puzzleString);
+        
+        if (temp.puzzleString == goalState)
+        {
+            return temp.path;
+        }
+        
+        else
+        {
+            vector<vector<string>> leftMove = temp.puzzleMatrix;
+            vector<vector<string>> rightMove = temp.puzzleMatrix;
+            vector<vector<string>> upMove = temp.puzzleMatrix;
+            vector<vector<string>> downMove = temp.puzzleMatrix;
+            
+            pair<int, int> coordinates = findSlider(temp.puzzleMatrix);
+            int xcord = coordinates.first;
+            int ycord = coordinates.second;
+            
+            if (moveLeft(leftMove, xcord, ycord))
+            {
+                string str = matrixToString(leftMove);
+                auto setItr = visitedSet.find(str);
+                if (setItr == visitedSet.end())
+                {
+                    Node newNode(str);
+                    
+                    newNode.costSoFar = (temp.costSoFar + 1);
+                    newNode.heuristicCost = heuristicValue(newNode.puzzleMatrix, coordinateMap);
+                    newNode.totalCost = newNode.costSoFar + newNode.heuristicCost;
+                    newNode.path += temp.path + newNode.puzzleMatrix[xcord][ycord] + ", ";
+                    
+                    pq.push(newNode);
+                }
+            }
+            
+            if (moveRight(rightMove, xcord, ycord))
+            {
+                string str = matrixToString(rightMove);
+                auto setItr = visitedSet.find(str);
+                if (setItr == visitedSet.end())
+                {
+                    Node newNode(str);
+                    
+                    newNode.costSoFar = (temp.costSoFar + 1);
+                    newNode.heuristicCost = heuristicValue(newNode.puzzleMatrix, coordinateMap);
+                    newNode.totalCost = newNode.costSoFar + newNode.heuristicCost;
+                    newNode.path += temp.path + newNode.puzzleMatrix[xcord][ycord] + ", ";
+                    
+                    pq.push(newNode);
+                }
+            }
+            
+            if (moveUp(upMove, xcord, ycord))
+            {
+                string str = matrixToString(upMove);
+                auto setItr = visitedSet.find(str);
+                if (setItr == visitedSet.end())
+                {
+                    Node newNode(str);
+                    
+                    newNode.costSoFar = (temp.costSoFar + 1);
+                    newNode.heuristicCost = heuristicValue(newNode.puzzleMatrix, coordinateMap);
+                    newNode.totalCost = newNode.costSoFar + newNode.heuristicCost;
+                    newNode.path += temp.path + newNode.puzzleMatrix[xcord][ycord] + ", ";
+                    
+                    pq.push(newNode);
+                }
+            }
+            
+            if (moveDown(downMove, xcord, ycord))
+            {
+                string str = matrixToString(downMove);
+                auto setItr = visitedSet.find(str);
+                if (setItr == visitedSet.end())
+                {
+                    Node newNode(str);
+                    
+                    newNode.costSoFar = (temp.costSoFar + 1);
+                    newNode.heuristicCost = heuristicValue(newNode.puzzleMatrix, coordinateMap);
+                    newNode.totalCost = newNode.costSoFar + newNode.heuristicCost;
+                    newNode.path += temp.path + newNode.puzzleMatrix[xcord][ycord] + ", ";
+                    
+                    pq.push(newNode);
+                }
+            }
+        }
+    }
+    return "Unexpected error! Should have found a solution, but I did not. Uh oh.";
+}

@@ -37,3 +37,46 @@ bool moveLeft(vector<vector<string>> &puzzleMatrix, int i, int j);
 bool moveRight(vector<vector<string>> &puzzleMatrix, int i, int j);
 
 bool isSolvable(string &puzzleString);
+
+struct Node
+{
+    string path;
+    string puzzleString;
+    
+    vector<vector<string>> puzzleMatrix;
+    
+    int costSoFar;
+    int heuristicCost;
+    int totalCost;
+    
+    bool operator>(const Node& node) const
+    {
+        return totalCost > node.totalCost;
+    }
+
+    Node(string str)
+    {
+        this->puzzleString = str;
+        
+        vector<vector<string>> puzzle;
+        int pos = 0;
+        
+        for (int i = 0; i < 3; i++)
+        {
+            vector<string> row;
+            
+            for (int j = 0; j < 3; j++)
+            {
+                string digit(1, str[pos]);
+                row.push_back(digit);
+                pos++;
+            }
+            puzzle.push_back(row);
+        }
+        this->puzzleMatrix = puzzle;
+    }
+    
+    ~Node() {}
+};
+
+string aStarAlgorithm(Node node, string goalState);
