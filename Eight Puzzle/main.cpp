@@ -41,8 +41,11 @@ int main()
     //Mapping coordinates for quicker calculations of heuristic values
     generateCoordinateMap(coordinateMap);
     
+    string inputFile;
+    cout << "Enter name of input file: ";
+    cin >> inputFile;
     
-    programDataStream.open("program-1-data.txt");
+    programDataStream.open(inputFile);
     if (!programDataStream.is_open())
     {
         cout << "Couldn't open file." << endl;
@@ -100,7 +103,7 @@ int main()
     
     auto duration = chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
 
-    cout << duration << "microseconds to solve all puzzles!" << endl;;
+    cout << duration << " microseconds to solve all puzzles!" << endl;;
     
     return 0;
 }
